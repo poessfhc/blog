@@ -1,7 +1,7 @@
 package com.poe.ssfhc.blog;
 
-import com.poe.ssfhc.blog.dao.TestDao;
-import com.poe.ssfhc.blog.domain.TestEntity;
+import com.poe.ssfhc.blog.authority.dao.TestDao;
+import com.poe.ssfhc.blog.authority.domain.TestEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

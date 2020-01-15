@@ -6,5 +6,5 @@ import lombok.Data;
 public class TestEntity {
     private Integer id;
     private String name;
-    private Integer password;
+    private String password;
 }

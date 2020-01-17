@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName: MyShiroRealm
- * @Description: TODO
- * @Author: Vicne
+ * @Description: 权限授权认证
+ * @Author: Vince
  * @Date: 2020/1/17 14:30
  * @Version: v1.0
  */

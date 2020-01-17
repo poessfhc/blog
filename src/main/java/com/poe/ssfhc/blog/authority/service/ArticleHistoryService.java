@@ -11,5 +11,5 @@ import com.poe.ssfhc.blog.authority.domain.ArticleHistory;
  * @Version: v1.0
  */
 public interface ArticleHistoryService {
-    public void addArticle(ArticleHistory articleHistory);
+    String addArticle(String json);
 }

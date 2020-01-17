@@ -28,7 +28,7 @@ public class ArticleHistoryServiceImpl implements ArticleHistoryService{
         ArticleHistory articleHistory = new ArticleHistory();
 
         JSONObject jsonResponse = new JSONObject();
-        if (object.get("useruuid")==null){
+        if (object.get("useruuid")==null||"".equals(object.get("useruuid"))){
             jsonResponse.put("msg","请登录");
             return jsonResponse.toString();
         }else {

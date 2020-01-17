@@ -1,7 +1,5 @@
-package com.poe.ssfhc.blog.authority.service;
+package com.poe.ssfhc.blog.article.service;
 
-
-import com.poe.ssfhc.blog.authority.domain.ArticleHistory;
 
 /**
  * @ClassName:

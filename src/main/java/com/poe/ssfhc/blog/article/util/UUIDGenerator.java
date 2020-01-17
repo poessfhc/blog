@@ -1,4 +1,4 @@
-package com.poe.ssfhc.blog.authority.util;
+package com.poe.ssfhc.blog.article.util;
 
 import java.util.UUID;
 

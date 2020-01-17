@@ -1,15 +1,14 @@
-package com.poe.ssfhc.blog.authority.service.impl;
+package com.poe.ssfhc.blog.article.service.impl;
 
-import com.poe.ssfhc.blog.authority.dao.ArticleHistoryMapper;
-import com.poe.ssfhc.blog.authority.domain.ArticleHistory;
-import com.poe.ssfhc.blog.authority.service.ArticleHistoryService;
-import com.poe.ssfhc.blog.authority.util.UUIDGenerator;
+import com.poe.ssfhc.blog.article.dao.ArticleHistoryMapper;
+import com.poe.ssfhc.blog.article.domain.ArticleHistory;
+import com.poe.ssfhc.blog.article.service.ArticleHistoryService;
+import com.poe.ssfhc.blog.article.util.UUIDGenerator;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * @ClassName:

@@ -1,42 +1,47 @@
 package com.poe.ssfhc.blog.authority.controller;
 
+import com.poe.ssfhc.blog.authority.domain.User;
+import com.poe.ssfhc.blog.authority.service.UserService;
+import com.poe.ssfhc.blog.utils.JsonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.io.Serializable;
 
 /**
  * @ClassName: LoginController
- * @Description: TODO
- * @Author: Vicne
+ * @Description: TODO 还需进行修改
+ * @Author: Vince
  * @Date: 2020/1/17 15:37
  * @Version: v1.0
  */
-@RestController
+@Controller
+@RequestMapping("/user")
 @Api(value = "简单登录测试")
 public class LoginController {
+    @Autowired
+    private UserService userService;
+
     @ApiOperation(value = "简单登录测试接口")
     @PostMapping("/login")
-    public String login(@RequestParam String username,@RequestParam String password){
-        Assert.notNull(username,"username不能为空");
-        Assert.notNull(password,"password不能为空");
-        UsernamePasswordToken upToken=new UsernamePasswordToken(username,password);
-        Subject subject= SecurityUtils.getSubject();
-        if(subject==null){
-            throw new RuntimeException("登陆异常");
-        }
-        try{
-            subject.login(upToken);
-        }catch (Exception e){
-            e.printStackTrace();
-            return "error";
-        }
-        return "success";
+    public JsonResult login(@RequestParam String username, @RequestParam String password) {
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        User user = userService.login(username, password);
+        SecurityUtils.getSubject().login(token);
+        //设置session时间
+        //SecurityUtils.getSubject().getSession().setTimeout(1000*60*30);
+        //token信息
+        Subject subject = SecurityUtils.getSubject();
+        Serializable tokenId = subject.getSession().getId();
+        return new JsonResult(1, "登录认证成功", tokenId);
     }
 
 }

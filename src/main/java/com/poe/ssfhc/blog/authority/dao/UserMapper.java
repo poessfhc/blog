@@ -18,4 +18,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User getUserByUsername(String username);
+
+    User login(String username,String password);
 }

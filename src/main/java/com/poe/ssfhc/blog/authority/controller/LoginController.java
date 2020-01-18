@@ -9,10 +9,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 
@@ -23,7 +20,7 @@ import java.io.Serializable;
  * @Date: 2020/1/17 15:37
  * @Version: v1.0
  */
-@Controller
+@RestController
 @RequestMapping("/user")
 @Api(value = "简单登录测试")
 public class LoginController {
@@ -41,7 +38,11 @@ public class LoginController {
         //token信息
         Subject subject = SecurityUtils.getSubject();
         Serializable tokenId = subject.getSession().getId();
-        return new JsonResult(1, "登录认证成功", tokenId);
+        return new JsonResult(1,"登录认证成功",tokenId);
+    }
+    @GetMapping("/test")
+    public String test(){
+        return "111";
     }
 
 }

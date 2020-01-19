@@ -45,7 +45,7 @@
     r.role_name
   </sql>
     <sql id="Menu_Column_List">
-    m.url
+    m.perms
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -222,15 +222,15 @@
         left join sys_role r on r.role_id = ur.role_id
         where u.username = #{username,jdbcType=VARCHAR}
     </select>
-    <select id="getPermissionsByUsername" parameterType="java.lang.String" resultType="java.lang.String">
+    <select id="getPermissionsByRoleName" parameterType="java.lang.String" resultType="java.lang.String">
         select
         <include refid="Menu_Column_List"/>
         from sys_role_menu rm
         left join sys_role r on r.role_id = rm.role_id
         left join sys_menu m on m.menu_id = rm.menu_id
         where r.role_name in
-        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
-          #{roleId}
+        <foreach collection="list" item="roleName" index="index" open="(" separator="," close=")">
+          #{roleName}
         </foreach>
     </select>
 </mapper>

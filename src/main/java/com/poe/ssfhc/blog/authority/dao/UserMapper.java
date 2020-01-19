@@ -27,5 +27,5 @@ public interface UserMapper {
 
     List<String> getRolesByName(String username);
 
-    List<String> getPermissionsByUsername(List<String> roleName);
+    List<String> getPermissionsByRoleName(List<String> roleNames);
 }

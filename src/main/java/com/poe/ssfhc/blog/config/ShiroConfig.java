@@ -4,13 +4,16 @@ import com.poe.ssfhc.blog.filter.CORSAuthenticationFilter;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
@@ -27,8 +30,6 @@ import java.util.Map;
 public class ShiroConfig {
 
     private static Logger log = LoggerFactory.getLogger(ShiroConfig.class);
-
-
 
 
     /**
@@ -79,16 +80,14 @@ public class ShiroConfig {
     }
 
 
-
-
-
     /**
      * securityManager 核心配置
      * 安全控制层
+     *
      * @return
      */
     @Bean
-    public org.apache.shiro.mgt.SecurityManager securityManager(){
+    public org.apache.shiro.mgt.SecurityManager securityManager() {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         //设置自定义的realm
         defaultWebSecurityManager.setRealm(myRealm());
@@ -103,6 +102,7 @@ public class ShiroConfig {
 
     /**
      * 自定义的realm
+     *
      * @return
      */
     @Bean
@@ -113,6 +113,7 @@ public class ShiroConfig {
 
     /**
      * 开启shiro 的AOP注解支持
+     *
      * @param securityManager
      * @return
      */
@@ -140,14 +141,41 @@ public class ShiroConfig {
 
     /**
      * 自定义的 shiro session 缓存管理器，用于跨域等情况下使用 token 进行验证，不依赖于sessionId
+     *
      * @return
      */
     @Bean
-    public SessionManager sessionManager(){
+    public SessionManager sessionManager() {
         //将我们继承后重写的shiro session 注册
         ShiroSession shiroSession = new ShiroSession();
         //如果后续考虑多tomcat部署应用，可以使用shiro-redis开源插件来做session 的控制，或者nginx 的负载均衡
         shiroSession.setSessionDAO(new EnterpriseCacheSessionDAO());
         return shiroSession;
+    }
+
+    /**
+     * 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
+     * 配置以下两个bean(DefaultAdvisorAutoProxyCreator(可选)和AuthorizationAttributeSourceAdvisor)即可实现此功能
+     *
+     * @return
+     */
+    @Bean
+    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
+    @Bean
+    @DependsOn({"lifecycleBeanPostProcessor"})
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+        return authorizationAttributeSourceAdvisor;
     }
 }

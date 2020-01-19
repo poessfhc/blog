@@ -15,9 +15,13 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,50 +32,50 @@ import java.util.stream.Collectors;
  * @Version: v1.0
  */
 public class MyShiroRealm extends AuthorizingRealm {
+    private final static Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
     @Autowired
     private UserMapper userMapper;
-    @Autowired
-    private RoleMapper roleMapper;
-    @Autowired
-    private MenuMapper menuMapper;
 
     /**
-     * 授权
+     * 权限获取
      *
      * @param principalCollection 身份集合
      * @return
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        String username = (String) getAvailablePrincipal(principalCollection);
+        List<String> roleList = userMapper.getRolesByName(username);
+        Set<String> roles = new HashSet<>(roleList);
+        List<String> permissionList = userMapper.getPermissionsByUsername(roleList);
+        Set<String> permissions = new HashSet<>(permissionList);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        User user = (User) principalCollection.getPrimaryPrincipal();
-        List<Role> roles = roleMapper.selectByPrimaryKey(user.getUserId());
-        List<Menu> menus = menuMapper.selectByPrimaryKey(user.getUserId());
-        simpleAuthorizationInfo.addRoles(roles.stream().map(Role::getRoleName).collect(Collectors.toSet()));
-        simpleAuthorizationInfo.addStringPermissions(menus.stream().map(Menu::getPerms).collect(Collectors.toSet()));
+        simpleAuthorizationInfo.setStringPermissions(permissions);
+        simpleAuthorizationInfo.setRoles(roles);
+        logger.debug("== >角色:"+String.join(",",roles));
+        logger.debug("== >权限:"+String.join(",",permissions));
         return simpleAuthorizationInfo;
     }
 
     /**
-     * 认证
+     * 身份验证
      *
-     * @param authenticationToken token
+     * @param token token
      * @return
      * @throws AuthenticationException
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String username = (String) authenticationToken.getPrincipal();
-        User user = userMapper.getUserByUsername(username);
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        String username = (String) token.getPrincipal();
+        String password = new String((char[]) token.getCredentials());
+        User user = userMapper.login(username);
         if (user == null) {
-            throw new UnknownAccountException("用户名或密码错误");
+            throw new UnknownAccountException();
+        } else if (!password.equals(user.getPassword())) {
+            throw new IncorrectCredentialsException();
         }
-        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
-                user, user.getPassword(), ByteSource.Util.bytes(user.getSalt()), getName()
-        );
-        Session session = SecurityUtils.getSubject().getSession();
-        session.setAttribute("user", user);
-        return simpleAuthenticationInfo;
+        AuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username, password, getName());
+        return authenticationInfo;
     }
 
     /**

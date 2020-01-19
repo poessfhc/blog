@@ -11,6 +11,4 @@ import com.poe.ssfhc.blog.authority.domain.User;
  */
 public interface UserService {
     User selectByPrimaryKey(String id);
-
-    User login(String username, String password);
 }

@@ -24,21 +24,17 @@ import java.io.Serializable;
 @RequestMapping("/user")
 @Api(value = "简单登录测试")
 public class LoginController {
-    @Autowired
-    private UserService userService;
-
     @ApiOperation(value = "简单登录测试接口")
     @PostMapping("/login")
     public JsonResult login(@RequestParam String username, @RequestParam String password) {
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        User user = userService.login(username, password);
         SecurityUtils.getSubject().login(token);
         //设置session时间
         //SecurityUtils.getSubject().getSession().setTimeout(1000*60*30);
         //token信息
         Subject subject = SecurityUtils.getSubject();
         Serializable tokenId = subject.getSession().getId();
-        return new JsonResult(1,"登录认证成功",tokenId);
+        return new JsonResult(tokenId);
     }
     @GetMapping("/test")
     public String test(){

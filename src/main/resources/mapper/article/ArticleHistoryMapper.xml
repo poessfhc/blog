@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poe.ssfhc.blog.article.dao.ArticleHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+    <result column="article_uuid" jdbcType="VARCHAR" property="articleUuid" />
+    <result column="create_article_time" jdbcType="TIMESTAMP" property="createArticleTime" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="delete_time" jdbcType="TIMESTAMP" property="deleteTime" />
+    <result column="article_description" jdbcType="VARCHAR" property="articleDescription" />
+    <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+  </resultMap>
+
+  <resultMap id="ArticleResultMap" type="com.poe.ssfhc.blog.article.dto.ArticleHistoryDTO">
+    <result column="create_article_time" jdbcType="TIMESTAMP" property="createArticleTime" />
+    <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+    <result column="article_uuid" jdbcType="VARCHAR" property="articleUuid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_uuid, article_uuid, create_article_time, last_update_time, delete_time, 
+    articleTitle,article_description
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from article_history
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <update id="deleteByArticleUuid" parameterType="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    update article_history
+    <set>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType = TIMESTAMP},
+      </if>
+      <if test="deleteTime != null">
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where article_uuid = #{articleUuid,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insert" parameterType="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    insert into article_history (id, user_uuid, article_uuid, 
+      create_article_time, last_update_time, 
+      delete_time,article_title ,article_description)
+    values (#{id,jdbcType=INTEGER}, #{userUuid,jdbcType=VARCHAR}, #{articleUuid,jdbcType=VARCHAR}, 
+      #{createArticleTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}, 
+      #{deleteTime,jdbcType=TIMESTAMP}, #{articleTitle,jdbcType=VARCHAR},#{articleDescription,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    insert into article_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userUuid != null">
+        user_uuid,
+      </if>
+      <if test="articleUuid != null">
+        article_uuid,
+      </if>
+      <if test="createArticleTime != null">
+        create_article_time,
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time,
+      </if>
+      <if test="deleteTime != null">
+        delete_time,
+      </if>
+      <if test="articleTitle != null">
+        article_title,
+      </if>
+      <if test="articleDescription != null">
+        article_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userUuid != null">
+        #{userUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="articleUuid != null">
+        #{articleUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="createArticleTime != null">
+        #{createArticleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null">
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleTitle != null">
+        #{articleTitle,jdbcType = VARCHAR},
+      </if>
+      <if test="articleDescription != null">
+        #{articleDescription,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByArticleUuid" parameterType="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    update article_history
+    <set>
+      <if test="userUuid != null">
+        user_uuid = #{userUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="articleUuid != null">
+        article_uuid = #{articleUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="createArticleTime != null">
+        create_article_time = #{createArticleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null">
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleTitle != null">
+        article_title = #{articleTitle,jdbcType = VARCHAR},
+      </if>
+      <if test="articleDescription != null">
+        article_description = #{articleDescription,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where article_uuid = #{articleUuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poe.ssfhc.blog.article.domain.ArticleHistory">
+    update article_history
+    set user_uuid = #{userUuid,jdbcType=VARCHAR},
+      article_uuid = #{articleUuid,jdbcType=VARCHAR},
+      create_article_time = #{createArticleTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      article_title = #{articleTitle,jdbcType = VARCHAR},
+      article_description = #{articleDescription,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUserUuid" parameterType="java.util.Map" resultMap="ArticleResultMap">
+    select create_article_time,article_title,article_uuid from article_history where user_uuid = #{useruuid,jdbcType=VARCHAR}
+    and delete_time is null
+    limit #{start,jdbcType=INTEGER},#{end,jdbcType=INTEGER}
+  </select>
+
+  <select id="countArticle" parameterType="java.lang.String" resultType="integer">
+    select count(1) from article_history where user_uuid = #{userUuid,jdbcType=VARCHAR} and delete_time is null;
+  </select>
+</mapper>

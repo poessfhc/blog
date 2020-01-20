@@ -10,4 +10,7 @@ package com.poe.ssfhc.blog.article.service;
  */
 public interface ArticleHistoryService {
     String addArticle(String json);
+    String deleteArticle(String json);
+    String updateArticle(String json);
+    String showArticle(String json);
 }

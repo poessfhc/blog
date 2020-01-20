@@ -17,6 +17,16 @@ public class ArticleHistory {
 
     private String articleDescription;
 
+    private String articleTitle;
+
+    public String getArticleTitle() {
+        return articleTitle;
+    }
+
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -29,6 +29,21 @@ public class ArticleController {
         String rep = articleHistoryService.addArticle(json_package);
         return jsonResponse(rep);
     }
+    @RequestMapping(value = "/deleteArticle" ,method = RequestMethod.POST)
+    public String deleteArticle(@RequestBody String json_package){
+        String rep = articleHistoryService.deleteArticle(json_package);
+        return jsonResponse(rep);
+    }
+    @RequestMapping(value = "/updateArticle" ,method = RequestMethod.POST)
+    public String updateArticle(@RequestBody String json_package){
+        String rep = articleHistoryService.updateArticle(json_package);
+        return jsonResponse(rep);
+    }
+    @RequestMapping(value = "/showArticle" ,method = RequestMethod.POST)
+    public String showArticle(@RequestBody String json_package){
+        String rep = articleHistoryService.showArticle(json_package);
+        return rep;
+    }
 
     protected String jsonResponse(String str){
         JSONObject jsonObject = new JSONObject();
